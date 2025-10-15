@@ -33,6 +33,7 @@ function get_div_icon_with_number(number, color) {
     });
 }
 
+let map;
 async function start() {
     map = init_map();
     const motorways = await fetch(new URL('./milestones-data.json', import.meta.url))

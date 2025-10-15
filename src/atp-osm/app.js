@@ -460,6 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
+let map;
 function load_all_map_data() {
 	document.querySelector('#map').classList.remove('d-none');
 	map = init_map();

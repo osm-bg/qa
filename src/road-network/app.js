@@ -79,6 +79,7 @@ function generate_accordion_item(id, title, body_children) {
     return div;
 }
 
+let map;
 async function start() {
     map = init_map();
     map.on('layeradd', function(e) {
