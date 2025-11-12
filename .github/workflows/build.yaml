@@ -46,6 +46,15 @@ jobs:
           workflow_search: true
           repo: osm-bg/qa-atp-osm
           path: ./src/atp-osm
+          
+      - name: Download qa-waste-containers artifact
+        uses: dawidd6/action-download-artifact@v11
+        with:
+          name: waste-containers-data
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow_search: true
+          repo: osm-bg/qa-waste-containers
+          path: ./src/waste-containers
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
