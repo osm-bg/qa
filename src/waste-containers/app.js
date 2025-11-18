@@ -1,4 +1,5 @@
 import { init_map } from '/src/assets/js/map.js';
+import { make_osm_link } from '/src/assets/js/utils.js';
 
 import L, { popup } from 'leaflet';
 import { markerClusterGroup } from 'leaflet.markercluster';
@@ -24,7 +25,7 @@ function add_container_to_map(marker_cluster, containers, category) {
         const popup_rows = [
             `Брой: ${container.tags.count ?? 'Неизвстен'}`,
             `Оператор: ${container.tags.operator ?? 'Неизвестен'}`,
-            `<div class="btn-group"><a class="btn btn-outline-primary" href="https://osm.org/node/${container.id}"><i class="bi bi-globe2"></i> OSM</a><a class="btn btn-outline-primary" href="https://osm.org/edit?node=${container.id}"><i class="bi bi-pencil"></i> iD</a></div>`
+            make_osm_link('node', container.id)
         ]
         const marker = L.marker(container.coords, { icon: div_icon, riseOnHover: true });
         marker.bindPopup(popup_rows.join('<br/>'));

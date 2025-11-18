@@ -1,7 +1,7 @@
 import { init_map, get_icon } from '/src/assets/js/map.js';
 import { markerClusterGroup } from 'leaflet.markercluster';
 import { brands_map } from './brands-map.js';
-
+import { make_osm_link } from '/src/assets/js/utils.js';
 
 function createTable(parent, items, spider_data, type, options=false) {
 	var table = document.createElement('table');
@@ -63,41 +63,6 @@ function create_anchor(url, text, newTab=true){
 
 function createText(text){
 	return document.createTextNode(text);
-}
-
-function generate_popup_buttons(location, group) {
-	let map_url = 'https://www.openstreetmap.org/';
-	let edit_url = 'https://www.openstreetmap.org/edit';
-	if(location.type && location.id) {
-		map_url += `${location.type}/${location.id}`
-		edit_url += `?${location.type}=${location.id}`
-	}
-	else {
-		const [lat, lon] = location.coordinates.map(number => number.toFixed(5));
-		map_url += `?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
-		edit_url += `#map=18/${lat}/${lon}`;
-	}
-
-	{
-		const map_anchor = create_anchor(map_url, ' OSM', true);
-		map_anchor.classList.add('btn', 'btn-outline-primary');
-		map_anchor.setAttribute('role', 'button');
-
-		const globe_icon = createHTMLElement('i', {class: 'bi bi-globe2'});
-		map_anchor.insertBefore(globe_icon, map_anchor.firstChild);
-
-		group.appendChild(map_anchor);
-	}
-	{
-		const edit_anchor = create_anchor(edit_url, ' iD', true);
-		edit_anchor.classList.add('btn', 'btn-outline-primary');
-		edit_anchor.setAttribute('role', 'button');
-
-		const pencil_icon = createHTMLElement('i', {class: 'bi bi-pencil'});
-		edit_anchor.insertBefore(pencil_icon, edit_anchor.firstChild);
-
-		group.appendChild(edit_anchor);
-	}
 }
 
 function createHTMLElement(tag, options={}, children=[]){
@@ -324,9 +289,7 @@ function generate_popup(spider, location) {
 		popup.appendChild(tags);
 	}
 	popup.appendChild(document.createElement('br'));
-	let btn_group = createHTMLElement('div', {class: 'btn-group'});
-	generate_popup_buttons(osm?osm:atp, btn_group);
-	popup.appendChild(btn_group);
+	popup.innerHTML += make_osm_link(osm?osm.type:null, osm?osm.id:null, atp.coordinates);
 	if(location.dist) {
 		popup.appendChild(document.createTextNode(`Разстояние: `));
 		let distance_text = location.dist.toFixed(2);
