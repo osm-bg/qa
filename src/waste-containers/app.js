@@ -52,21 +52,20 @@ async function start() {
             label_func: (tags) => {
                 const operator = tags['operator'] ?? 'Неизвестен';
                 const count = tags['count'] ?? '?';
-                if(['Екопак'].includes(operator)) {
+                if(['Екопак', 'Екобулпак', 'Булекопак'].includes(operator)) {
                     const colour_counts = ['green', 'yellow', 'blue'].map(colour => tags[`count:${colour}`] ?? '?');
                     const colour_emojies = ['🟢', '🟡', '🔵'];
-                    const colour_parts = colour_counts.map((count, index) => {
+                    const colour_parts = colour_counts
+                    .map((count, index) => {
+                        if(['?', '0'].includes(count)) {
+                            return null;
+                        }
                         return `${count}x${colour_emojies[index]}`;
-                    });
-                    return `${count}x♻️ (${colour_parts.join(', ')})`;
-                }
-                else if(['Екобулпак', 'Булекопак'].includes(operator)) {
-                    const colour_counts = ['green', 'yellow'].map(colour => tags[`count:${colour}`] ?? '?');
-                    const colour_emojies = ['🟢', '🟡'];
-                    const colour_parts = colour_counts.map((count, index) => {
-                        return `${count}x${colour_emojies[index]}`;
-                    });
-                    return `${count}x♻️ (${colour_parts.join(', ')})`;
+                    })
+                    .filter(part => part !== null);
+                    if(colour_parts.length > 0) {
+                        return `${count}x♻️ (${colour_parts.join(', ')})`;
+                    }
                 }
                 return `${count}x♻️`;
             }
