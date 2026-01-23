@@ -1,6 +1,6 @@
 // import { init_map, get_icon } from '$lib/js/map.client.js';
 // import { markerClusterGroup } from 'leaflet.markercluster';
-// import { brands_map } from './brands-map.js';
+import { brands_map } from './brands-map.js';
 import { make_osm_link } from '$lib/js/utils.js';
 import { onMount } from 'svelte';
 
