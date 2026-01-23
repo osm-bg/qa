@@ -94,7 +94,7 @@
 
         for (const spider of spiders_data) {
             const key = `${spider.key}-${spider.value}-${spider.spider}`;
-            const url = new URL('./../data/' + `${key}.json`, import.meta.url).href;
+            const url = new URL('./../' + `${key}.json`, import.meta.url).href;
             const response = await fetch(url);
             const data = (await response.json());
             data.data = data.data.filter(item => item.osm || item.atp);

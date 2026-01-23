@@ -20,9 +20,6 @@
 
 <div class="row">
     <div class="col-12 col-sm-5">
-        <div class="alert alert-warning d-none" id="fuzzy_coords_notice">
-            <span class="fw-bold">Възможни значителни отклонения в координатите (50-200 метра)</span>
-        </div>
         <ATPTable spiders_data={groups} by_categories={true}/>
     </div>
     <div class="col-12 col-sm-7">

@@ -167,7 +167,7 @@ function createHTMLElement(tag, options={}, children=[]){
 }*/
 
 export function load_data() {
-	return fetch(new URL('data/metadata.json', import.meta.url))
+	return fetch(new URL('./metadata.json', import.meta.url))
 	.then(res => res.json())
 	.then(data => data.sort((a, b) => a.spider.localeCompare(b.spider) || a.key.localeCompare(b.key)  || a.value.localeCompare(b.value)))
 	.then(data => {
