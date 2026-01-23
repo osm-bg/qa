@@ -11,6 +11,7 @@
     import ATPLegend from '/src/components/ATPLegend.svelte';
     import MapView from '/src/components/MapView.svelte';
     import ATPPopup from '/src/components/ATPPopup.svelte';
+    import { brands_map } from '/src/routes/atp-osm/brands-map.js';
     let spiders_data = [];
     let markers = {};
     let mapComponent = null;
@@ -94,8 +95,7 @@
 
         for (const spider of spiders_data) {
             const key = `${spider.key}-${spider.value}-${spider.spider}`;
-            const url = new URL('./../' + `${key}.json`, import.meta.url).href;
-            const response = await fetch(url);
+            const response = await fetch(brands_map.get(key));
             const data = (await response.json());
             data.data = data.data.filter(item => item.osm || item.atp);
             markers[key] = data;
