@@ -22,7 +22,7 @@
         else {
             shown_routes.add(route.ref);
             if(!route.layer) {
-                const route_req = await fetch(routes_map.get(route.ref));
+                const route_req = await fetch(routes_map.get(route.ref.toString()));
                 const route_data = await route_req.json();
                 const encoded_polylines = route_data.polylines;
                 const decoded_features = encoded_polylines.map(encoded => {
