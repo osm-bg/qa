@@ -7,7 +7,7 @@
     import { decode } from 'google-polyline';
     import { SvelteSet } from 'svelte/reactivity';
     import LastUpdate from "../../components/LastUpdate.svelte";
-    import './routes-map.js';
+    import { routes_map } from './routes-map.js';
 
     let mapComponent;
     const shown_routes = new SvelteSet();
@@ -22,8 +22,7 @@
         else {
             shown_routes.add(route.ref);
             if(!route.layer) {
-                const url = `./route-${route.ref}.json`.replace(' ', '_');
-                const route_req = await fetch(new URL(url, import.meta.url));
+                const route_req = await fetch(routes_map.get(route.ref));
                 const route_data = await route_req.json();
                 const encoded_polylines = route_data.polylines;
                 const decoded_features = encoded_polylines.map(encoded => {
