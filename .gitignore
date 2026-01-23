@@ -1,3 +1,5 @@
 node_modules
-.parcel-cache
+.svelte-kit
 dist
+*/**/*.json
+old-src

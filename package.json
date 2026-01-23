@@ -7,8 +7,11 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-github": "npx parcel build $npm_package_config_parcel_paths --public-url /qa/",
-    "dev": "parcel $npm_package_config_parcel_paths"
+    "build-github": "vite build --base /qa/",
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''"
   },
   "repository": {
     "type": "git",
@@ -22,17 +25,19 @@
     "url": "https://github.com/osm-bg/qa/issues"
   },
   "dependencies": {
+    "@sveltejs/adapter-static": "^3.0.10",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "google-polyline": "^1.0.3",
     "leaflet": "^1.9.4",
-    "leaflet.featuregroup.subgroup": "^1.0.2",
     "leaflet.locatecontrol": "^0.84.2",
-    "leaflet.markercluster": "^1.5.3",
-    "parcel": "^2.15.4"
+    "leaflet.markercluster": "^1.5.3"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.15.4",
-    "posthtml-include": "^2.0.1"
+    "@sveltejs/adapter-auto": "^7.0.0",
+    "@sveltejs/kit": "^2.49.1",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "svelte": "^5.45.6",
+    "vite": "^7.2.7"
   }
 }
