@@ -7,6 +7,7 @@
     import { decode } from 'google-polyline';
     import { SvelteSet } from 'svelte/reactivity';
     import LastUpdate from "../../components/LastUpdate.svelte";
+    import './routes-map.js';
 
     let mapComponent;
     const shown_routes = new SvelteSet();
