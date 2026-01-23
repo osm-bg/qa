@@ -39,7 +39,7 @@ jobs:
           workflow_search: true
           repo: osm-bg/qa-road-network
           path: ./src/routes/road-network
-          
+
       - name: Download qa-atp-osm artifact
         uses: dawidd6/action-download-artifact@v11
         with:
@@ -48,7 +48,7 @@ jobs:
           workflow_search: true
           repo: osm-bg/qa-atp-osm
           path: ./src/routes/atp-osm
-          
+
       - name: Download qa-waste-containers artifact
         uses: dawidd6/action-download-artifact@v11
         with:
@@ -57,6 +57,7 @@ jobs:
           workflow_search: true
           repo: osm-bg/qa-waste-containers
           path: ./src/routes/waste-containers
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
 
