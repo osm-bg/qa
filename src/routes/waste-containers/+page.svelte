@@ -12,11 +12,13 @@
         {
             name: 'waste_disposal',
             label: 'Контейнери за смесени отпадъци',
+            bg_label: 'Битови отпадъци',
             emoji: '🗑️'
         },
         {
             name: 'package_recycling',
             label: 'Контейнери за разделно събиране',
+            bg_label: 'Разделно събиране',
             emoji: '♻️',
             label_func: (tags) => {
                 const operator = tags['operator'] ?? 'Неизвестен';
@@ -59,46 +61,61 @@
         {
             name: 'pet_container',
             label: 'Контейнери за PET бутилки',
+            bg_label: 'PET бутилки',
             emoji: '💧'
         },
         {
             name: 'clothes_recycling',
             label: 'Контейнери за дрехи',
+            bg_label: 'Дрехи',
             emoji: '👕'
         },
         {
             name: 'electronic_recycling',
             label: 'Контейнери за електронни отпадъци',
+            bg_label: 'Електронни отпадъци',
             emoji: '📱'
         },
         {
             name: 'battery_recycling',
             label: 'Контейнери за батерии',
+            bg_label: 'Батерии',
             emoji: '🔋'
         },
         {
             name: 'bottle_return_machine',
             label: 'Машини за връщане на бутилки',
+            bg_label: 'Връщане на бутилки',
             emoji: '🍼'
         },
         {
             name: 'cooking_oil',
             label: 'Контейнери за използвано готварско олио',
+            bg_label: 'Готварско олио',
             emoji: '🛢️'
         },
         {
             name: 'plastic_caps',
             label: 'Контейнери за пластмасови капачки',
+            bg_label: 'Пластмасови капачки',
             emoji: '🩷'
+        },
+        {
+            name: 'drugs',
+            label: 'Контейнери за лекарства с изтекъл срок на годност',
+            bg_label: 'Лекарства',
+            emoji: '💊'
         },
         {
             name: 'unknown_type',
             label: 'Неизвестен тип контейнер',
+            bg_label: 'Неизвестен тип',
             emoji: '❓'
         },
         {
             name: 'unknown_waste',
             label: 'Неизвестен отпадък',
+            bg_label: 'Неизвестен отпадък',
             emoji: '❓'
         }
     ]);
