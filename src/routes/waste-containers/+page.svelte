@@ -157,9 +157,11 @@
             const icon = get_group_icon(group.containers);
             const popup = L.popup().setContent('<span class="fs-5">' + group.containers.map(container => {
                 const url = `https://www.openstreetmap.org/${container.type}/${container.id}`;
-                const anchor = `<a href="${url}" target="_blank">${container.type[0]} ${container.id}</a>`;
-                return anchor;
-            }).join('<br/>') + '</span>');
+                const waste_group = container_groups_by_type.find(g => g.name === container.cat);
+                const anchor = `<a href="${url}" target="_blank">${waste_group.bg_label}</a>`;
+                const text = `<br> Оператор: ${container.tags['operator'] ?? '<i>Неизвестен</i>'}<br>Брой: ${container.tags['count'] ?? '<i>Неизвестен</i>'}`;
+                return anchor + text;
+            }).join('<br><br>') + '</span>');
             group.marker = L.marker(avg_coords, {
                 icon: icon,
                 riseOnHover: true
