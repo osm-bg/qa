@@ -229,6 +229,7 @@
     Кратки етикети за контейнери за разделно събиране
 </label>
 <MapView bind:this={mapComponent} height="750px" startZoom={8} maxZoom={20} />
+<LastUpdate date={last_update_date} />
 <table class="table table-bordered mt-2">
     <thead>
         <tr class="table-secondary text-center">
@@ -246,4 +247,3 @@
         {/each}
     </tbody>
 </table>
-<LastUpdate date={last_update_date} />
