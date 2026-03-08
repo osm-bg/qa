@@ -26,7 +26,7 @@
                 if(show_short_recycling_label) {
                     return `${count}x♻️`;
                 }
-                if(['Екопак', 'Екобулпак', 'Булекопак'].includes(operator)) {
+                if(['Екопак', 'Екобулпак', 'Булекопак', 'Еко Партнърс'].includes(operator)) {
                     const colour_counts = ['green', 'yellow', 'blue'].map(colour => tags[`count:${colour}`] ?? '?');
                     const colour_emojies = ['🟢', '🟡', '🔵'];
                     const colour_parts = colour_counts
@@ -45,7 +45,7 @@
             },
             is_complete_func: (tags) => {
                 const required_tags = ['count:green', 'count:yellow', 'count:blue'];
-                const required_operators = ['Екопак', 'Екобулпак', 'Булекопак'];
+                const required_operators = ['Екопак', 'Екобулпак', 'Булекопак', 'Еко Партнърс'];
                 const operator = tags['operator'] ?? 'Неизвестен';
                 if(required_operators.includes(operator)) {
                     if(required_tags.every(tag => tag in tags)) {
