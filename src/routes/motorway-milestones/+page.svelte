@@ -121,8 +121,10 @@
 
 <Title title="Километрични маркери"/>
 
+<MapView bind:this={mapComponent} startZoom={8} minZoom={7} height="700px"/>
+<LastUpdate date={last_update_date} />
 <div class="row">
-    <div class="col-12 col-md-5">
+    <div class="col-8">
         <table class="table table-sm">
             <thead>
                 <tr class="table-secondary">
@@ -142,10 +144,8 @@
             </tbody>
         </table>
     </div>
-    <div class="col-12 col-md-7">
-        <MapView bind:this={mapComponent} startZoom={7} minZoom={7}/>
-        <LastUpdate date={last_update_date} />
-        <table class="table table-sm mt-2">
+    <div class="col-4">
+        <table class="table table-sm">
             <thead>
                 <tr class="table-secondary text-center">
                     <th colspan="2">Легенда</th>
