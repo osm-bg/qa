@@ -38,7 +38,7 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow_search: true
           repo: osm-bg/qa-road-network
-          path: ./src/routes/road-network
+          path: ./src/routes/road-network/data
 
       - name: Download qa-atp-osm artifact
         uses: dawidd6/action-download-artifact@v11
@@ -47,7 +47,7 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow_search: true
           repo: osm-bg/qa-atp-osm
-          path: ./src/routes/atp-osm
+          path: ./src/routes/atp-osm/data
 
       - name: Download qa-waste-containers artifact
         uses: dawidd6/action-download-artifact@v11

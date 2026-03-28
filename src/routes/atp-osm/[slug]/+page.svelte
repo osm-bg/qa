@@ -11,7 +11,7 @@
     import ATPLegend from '/src/components/ATPLegend.svelte';
     import MapView from '/src/components/MapView.svelte';
     import ATPPopup from '/src/components/ATPPopup.svelte';
-    import { brands_map } from '/src/routes/atp-osm/brands-map.js';
+    import { brands_map } from '/src/routes/atp-osm/data/brands-map.js';
     let spiders_data = [];
     let markers = {};
     let mapComponent = null;

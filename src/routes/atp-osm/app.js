@@ -1,6 +1,6 @@
 // import { init_map, get_icon } from '$lib/js/map.client.js';
 // import { markerClusterGroup } from 'leaflet.markercluster';
-import { brands_map } from './brands-map.js';
+import { brands_map } from './data/brands-map.js';
 import { make_osm_link } from '$lib/js/utils.js';
 import { onMount } from 'svelte';
 
@@ -167,7 +167,7 @@ function createHTMLElement(tag, options={}, children=[]){
 }*/
 
 export function load_data() {
-	return fetch(new URL('./metadata.json', import.meta.url))
+	return fetch(new URL('./data/metadata.json', import.meta.url))
 	.then(res => res.json())
 	.then(data => data.sort((a, b) => a.spider.localeCompare(b.spider) || a.key.localeCompare(b.key)  || a.value.localeCompare(b.value)))
 	.then(data => {
@@ -353,7 +353,7 @@ function populate_map(key, value, spider_data, locations, overlays, cluster_grou
 }
 
 function show_spider_data(spider_name) {
-    fetch(new URL('./metadata.json', import.meta.url))
+    fetch(new URL('./data/metadata.json', import.meta.url))
     .then(res => res.json())
 	.then(spiders => spiders.filter(spider => spider.spider === spider_name))
 	.then(async (spiders) => {
@@ -421,7 +421,7 @@ function load_all_map_data() {
 		showCoverageOnHover: false
 	}).addTo(map);
 	console.time('load_all_map_data');
-    fetch(new URL('./metadata.json', import.meta.url))
+    fetch(new URL('./data/metadata.json', import.meta.url))
 	.then(res => res.json())
 	.then(data => {
 		let promises = [];

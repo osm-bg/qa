@@ -7,7 +7,7 @@
     import { decode } from 'google-polyline';
     import { SvelteSet } from 'svelte/reactivity';
     import LastUpdate from "../../components/LastUpdate.svelte";
-    import { routes_map } from './routes-map.js';
+    import { routes_map } from './data/routes-map.js';
 
     let mapComponent;
     const shown_routes = new SvelteSet();
@@ -114,7 +114,7 @@
     let last_update_date = null;
     onMount(async () => {
         const map = mapComponent.get_map();
-        const req = await fetch(new URL('./routes.json', import.meta.url));
+        const req = await fetch(new URL('./data/routes.json', import.meta.url));
         const data = await req.json();
         const all_routes = data.data;
         last_update_date = data.date;
@@ -193,7 +193,7 @@
         </table>
     </div>
     <div class="col col-12 col-md-8">
-        <MapView bind:this={mapComponent}/>
+        <MapView bind:this={mapComponent} maxHeight={'900px'}/>
         <LastUpdate date={last_update_date} />
     </div>
 </div>

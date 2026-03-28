@@ -17,7 +17,7 @@
     let last_update_date = null;
     onMount(async () => {
         const map = mapComponent.get_map();
-        const data = await fetch(new URL('./milestones-data.json', import.meta.url).href)
+        const data = await fetch(new URL('./data/milestones-data.json', import.meta.url).href)
         .then(res => res.json());
         last_update_date = data.date;
         motorways = data.data;
