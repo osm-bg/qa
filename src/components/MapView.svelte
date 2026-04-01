@@ -2,11 +2,14 @@
 	import "leaflet/dist/leaflet.css";
 	import { onMount } from "svelte";
 	import L from "leaflet";
+	import { LocateControl } from "leaflet.locatecontrol";
+	import '/node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css';
 	let map;
 	export let startZoom = 7;
 	export let minZoom = 7;
 	export let maxZoom = 18;
 	export let height = "400px";
+	export let enableLocateControl = true;
 
 	onMount(async () => {
 		map = L.map('map').setView([42.740, 25.450], startZoom);
@@ -17,6 +20,10 @@
 			maxNativeZoom: 19,
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 		}).addTo(map);
+
+		if (enableLocateControl) {
+			new LocateControl().addTo(map);
+		}
 
 		map.invalidateSize();
 	});
