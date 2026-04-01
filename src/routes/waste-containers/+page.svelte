@@ -8,6 +8,38 @@
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
+    function generate_popup_content(group) {
+        let content = '';
+        for(const [i, container] of group.containers.entries()) {
+            const waste_group = container_groups_by_type.find(g => g.name === container.cat);
+            if(container.ids) {
+                let c = 1;
+                content += `<h5>${waste_group.label} (${container.ids.map(id => `<a href="https://osm.org/node/${id}" target="_blank">${c++}</a>`).join(', ')})</h5>`;
+            }
+            else {
+                content += `<h5><a href="https://osm.org/node/${container.id}" target="_blank">${waste_group.label}</a></h5>`;
+            }
+            content += `Оператор: ${container.tags['operator'] ?? '<i>Неизвестен</i>'}<br>Брой: ${container.tags['count'] ?? '<i>Неизвестен</i>'}`;
+            if(waste_group.name === 'package_recycling') {
+                const mappings = {
+                    'count:green': '🟢',
+                    'count:yellow': '🟡',
+                    'count:blue': '🔵',
+                    'count:pet_drink_bottles': '💧'
+                };
+                for(const [tag, emoji] of Object.entries(mappings)) {
+                    if(container.tags[tag]) {
+                        content += `<br>${emoji}: ${container.tags[tag]}`;
+                    }
+                }
+            }
+            if(i < group.containers.length - 1) {
+                content += '<hr>';
+            }
+        }
+        return content;
+    }
+
     let container_groups_by_type = $state([
         {
             name: 'waste_disposal',
@@ -27,8 +59,8 @@
                     return `${count}x♻️`;
                 }
                 if(['Екопак', 'Екобулпак', 'Булекопак', 'Еко Партнърс'].includes(operator)) {
-                    const colour_counts = ['green', 'yellow', 'blue'].map(colour => tags[`count:${colour}`] ?? '?');
-                    const colour_emojies = ['🟢', '🟡', '🔵'];
+                    const colour_counts = ['green', 'yellow', 'blue', 'pet_drink_bottles'].map(colour => tags[`count:${colour}`] ?? '?');
+                    const colour_emojies = ['🟢', '🟡', '🔵', '💧'];
                     const colour_parts = colour_counts
                     .map((count, index) => {
                         if(['?', '0'].includes(count)) {
@@ -57,12 +89,6 @@
                 }
                 return false;
             }
-        },
-        {
-            name: 'pet_container',
-            label: 'Контейнери за PET бутилки',
-            bg_label: 'PET бутилки',
-            emoji: '💧'
         },
         {
             name: 'clothes_recycling',
@@ -155,13 +181,8 @@
             }
             const avg_coords = find_avg_coords(group.containers);
             const icon = get_group_icon(group.containers);
-            const popup = L.popup().setContent('<span class="fs-5">' + group.containers.map(container => {
-                const url = `https://www.openstreetmap.org/${container.type}/${container.id}`;
-                const waste_group = container_groups_by_type.find(g => g.name === container.cat);
-                const anchor = `<a href="${url}" target="_blank">${waste_group.bg_label}</a>`;
-                const text = `<br> Оператор: ${container.tags['operator'] ?? '<i>Неизвестен</i>'}<br>Брой: ${container.tags['count'] ?? '<i>Неизвестен</i>'}`;
-                return anchor + text;
-            }).join('<br><br>') + '</span>');
+            const popup = L.popup().setContent('<span class="fs-5">' + generate_popup_content(group) + '</span><br><br>');
+
             group.marker = L.marker(avg_coords, {
                 icon: icon,
                 riseOnHover: true
