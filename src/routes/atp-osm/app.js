@@ -1,4 +1,5 @@
 // import { markerClusterGroup } from 'leaflet.markercluster';
+import { base } from '$app/paths';
 import { brands_map } from '/static/atp-osm/data/brands-map.js';
 import { make_osm_link } from '$lib/js/utils.js';
 import { onMount } from 'svelte';
@@ -166,7 +167,7 @@ function createHTMLElement(tag, options={}, children=[]){
 }*/
 
 export function load_data() {
-	return fetch('/atp-osm/data/metadata.json')
+	return fetch(`${base}/atp-osm/data/metadata.json`)
 	.then(res => res.json())
 	.then(data => data.sort((a, b) => a.spider.localeCompare(b.spider) || a.key.localeCompare(b.key)  || a.value.localeCompare(b.value)))
 	.then(data => {
