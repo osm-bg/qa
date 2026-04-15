@@ -1,5 +1,5 @@
 // import { markerClusterGroup } from 'leaflet.markercluster';
-import { brands_map } from './data/brands-map.js';
+import { brands_map } from '/static/atp-osm/data/brands-map.js';
 import { make_osm_link } from '$lib/js/utils.js';
 import { onMount } from 'svelte';
 
