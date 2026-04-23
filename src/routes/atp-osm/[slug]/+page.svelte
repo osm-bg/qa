@@ -2,21 +2,54 @@
     import { mount, unmount, onMount } from 'svelte';
     import { page } from '$app/stores';
     import { load_data } from './../app.js';
-    import L from 'leaflet';
+    import L, { marker } from 'leaflet';
     import 'leaflet.markercluster';
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
     import Title from '/src/components/Title.svelte';
     import ATPTable from '/src/components/ATPTable.svelte';
+    import ATPDetailsTable from '/src/components/ATPDetailsTable.svelte';
     import ATPLegend from '/src/components/ATPLegend.svelte';
     import MapView from '/src/components/MapView.svelte';
     import ATPPopup from '/src/components/ATPPopup.svelte';
-    import { brands_map } from '/static/atp-osm/data/brands-map.js';
-    let spiders_data = [];
-    let markers = {};
+    import { SvelteMap, SvelteSet } from 'svelte/reactivity';
+    import LastUpdate from '../../../components/LastUpdate.svelte';
+    let spider_data = $state(null);
+    let last_update_date = $derived(spider_data?.metadata?.date);
+    let spider_items = $derived(spider_data?.items || []);
+    let compare_keys = $derived(spider_data?.metadata?.compare_keys || []);
     let mapComponent = null;
+    let map = null;
+    const counts = $state({
+        atp_only: 0,
+        osm_only: 0,
+        different: 0,
+        same: 0
+    });
+    let checked = $state({
+        atp_only: true,
+        osm_only: true,
+        different: true,
+        same: true
+    });
+    let cluster = null;
+
+    $effect(() => {
+        const state_filter = {...checked}
+
+        if (!cluster || !spider_items.length) return;
+
+        for(const point of spider_items) {
+            if(!checked[point.marker_type]) {
+                cluster.removeLayer(point.marker);
+                continue;
+            }
+            cluster.addLayer(point.marker);
+        }
+    });
+    
     onMount(async () => {
-        const map = mapComponent.get_map();
+        map = mapComponent.get_map();
         function generate_tags_table(osm, atp, compare_keys) {
             const tags_table = {};
             if(compare_keys === false) {
@@ -58,83 +91,103 @@
             }
             return '';
         }
-        function deterimine_icon_url(osm, atp, tags_table) {
+        function determine_icon_url(point, compare_keys) {
+            const {osm, atp} = point;
             function distance(coord1, coord2) {
                 const xdiff = coord1[0] - coord2[0];
                 const ydiff = coord1[1] - coord2[1];
                 return Math.sqrt(xdiff * xdiff + ydiff * ydiff) * 111320; // approximate conversion to meters
             }
+            function compare_kv(osm_value, atp_value) {
+                if(osm_value === atp_value) {
+                    return false;
+                }
+                if(!osm_value && atp_value) {
+                    return true;
+                }
+                else if(osm_value && atp_value && osm_value !== atp_value) {
+                    return true;
+                }
+                else if(osm_value && !atp_value) {
+                    return true;
+                }
+                return false;
+            }
             const icons = {
                 atp_only: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
                 osm_only: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                different_tags: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
-                different_distance: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+                different: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
                 same: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png'
             };
             let iconUrl = icons.same;
             if(osm && !atp) {
                 iconUrl = icons.osm_only;
+                point.marker_type = 'osm_only';
+                counts.osm_only++;
             } 
             else if(!osm && atp) {
                 iconUrl = icons.atp_only;
+                point.marker_type = 'atp_only';
+                counts.atp_only++;
             }
-            else if(tags_table !== false && Object.values(tags_table).some(tag => tag.colour !== '')) {
-                iconUrl = icons.different_tags;
+            else if(distance(osm.coordinates, atp.coordinates) > 100 || (compare_keys !== false && compare_keys.some(k => compare_kv(osm.tags?.[k], atp.tags?.[k])))) {
+                iconUrl = icons.different;
+                point.marker_type = 'different';
+                counts.different++;
             }
-            else if(distance(osm.coordinates, atp.coordinates) > 20) {
-                iconUrl = icons.different_distance;
+            else {
+                point.marker_type = 'same';
+                counts.same++;
             }
             return iconUrl;
         }
         const spider = $page.params.slug;
-        const all_data = await load_data();
-        spiders_data = all_data
-        .filter(group => group.spiders.some(s => s.spider === spider))
-        .flatMap(group => group.spiders)
-        .filter(s => s.spider === spider);
 
-        for (const spider of spiders_data) {
-            const key = `${spider.key}-${spider.value}-${spider.spider}`;
-            const response = await fetch(brands_map.get(key));
-            const data = (await response.json());
-            data.data = data.data.filter(item => item.osm || item.atp);
-            markers[key] = data;
-        }
-        console.log(markers);
+        const data = await fetch(new URL(`../../../../static/atp-osm/data/${spider}.json`, import.meta.url));
+        spider_data = await data.json();
 
-        function create_popup(atp, osm, compare_keys, tags_table, main_tag) {
-            const container = document.createElement('div');
-            const destroy = mount(ATPPopup, {
-                target: container,
-                props: { atp, osm, compare_keys, tags_table, main_tag }
+        function bind_lazy_popup(marker, point, compare_keys, tags_table, main_tag) {
+            marker.on('click', () => {
+            // Only mount if it's not already mounted
+                if (!marker.getPopup()) {
+                    const container = document.createElement('div');
+                    const component = mount(ATPPopup, {
+                        target: container,
+                        props: { point, compare_keys, tags_table, main_tag }
+                    });
+                    container._svelte_component = component;
+                
+                    marker.bindPopup(container).openPopup();
+                }
             });
-            container._destroy = destroy;
-            return container;
         }
 
-        const cluster = L.markerClusterGroup({
+        cluster = L.markerClusterGroup({
             chunkedLoading: true,
             showCoverageOnHover: false,
         });
-
-        Object.values(markers).forEach(marker_group => {
-            marker_group.data.forEach(p => {
-                const coordinates = p.osm ? p.osm.coordinates : p.atp.coordinates;
-                const tags_table = generate_tags_table(p.osm, p.atp, marker_group.metadata.compare_keys);
-                const marker = L.marker(coordinates, {
-                    icon: L.icon({
-                        iconUrl: deterimine_icon_url(p.osm, p.atp, tags_table),
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                    })
-                });
-
-                marker.bindPopup(create_popup(p.atp, p.osm, marker_group.metadata.compare_keys, tags_table, `${marker_group.metadata.key}=${marker_group.metadata.value}`));
-                cluster.addLayer(marker);
+        const markers_for_adding = [];
+        spider_data.items.forEach(p => {
+            const coordinates = p.osm ? p.osm.coordinates : p.atp.coordinates;
+            const tags_table = generate_tags_table(p.osm, p.atp, compare_keys);
+            const marker = L.marker(coordinates, {
+                icon: L.icon({
+                    iconUrl: determine_icon_url(p, compare_keys),
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                })
             });
+            
+            // marker.bindPopup(create_popup(p, compare_keys, tags_table, ''));
+            bind_lazy_popup(marker, p, compare_keys, tags_table, '');
+            p.marker = marker;
+            if (checked[p.marker_type]) {
+                markers_for_adding.push(marker);
+            }
         });
 
+        cluster.addLayers(markers_for_adding);
         map.addLayer(cluster);
         map.on('popupclose', e => {
             e.popup.getContent()?.destroy?.();
@@ -142,19 +195,22 @@
     });
 </script>
 
-<Title title={spiders_data[0]?.name + ' - ATP - OSM Интеграция'}/>
+<Title title={spider_data?.metadata?.name + ' - ATP - OSM Интеграция'}/>
 
 <div class="row">
-    <div class="col-12 col-sm-5">
+    <div class="col-12 col-sm-10">
+        <div>
+            <MapView bind:this={mapComponent} height="700px" startZoom="8"/>
+        </div>
+    </div>
+    <div class="col-12 col-sm-2">
         <div class="alert alert-warning d-none" id="fuzzy_coords_notice">
             <span class="fw-bold">Възможни значителни отклонения в координатите (50-200 метра)</span>
         </div>
-        <ATPTable spiders_data={spiders_data} by_categories={false} title={spiders_data[0]?.name}/>
+        <ATPLegend counts={counts} checked={checked}/>
+        <LastUpdate date={last_update_date}/>
     </div>
-    <div class="col-12 col-sm-7">
-        <div style="height: 500px;">
-            <MapView bind:this={mapComponent}/>
-        </div>
-        <ATPLegend/>
+    <div class="col-12">
+        <ATPDetailsTable external_data={spider_items} compare_keys={compare_keys} map={map} checked={checked}/>
     </div>
 </div>

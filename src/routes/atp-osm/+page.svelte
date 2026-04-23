@@ -12,6 +12,7 @@
     onMount(async () => {
         console.log('onMount fired');
         groups = await load_data();
+        last_update_date = new Date(groups.date);
         console.log('groups after load:', groups);
     });
 </script>
@@ -27,6 +28,5 @@
             <button class="btn btn-outline-primary">Зареди всички данни</button>
         </div> -->
         <LastUpdate date={last_update_date} />
-        <ATPLegend/>
     </div>
 </div>
