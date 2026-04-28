@@ -38,14 +38,15 @@
         const state_filter = {...checked}
 
         if (!cluster || !spider_items.length) return;
-
+        const to_add = [];
         for(const point of spider_items) {
             if(!checked[point.marker_type]) {
-                cluster.removeLayer(point.marker);
                 continue;
             }
-            cluster.addLayer(point.marker);
+            to_add.push(point.marker);
         }
+        cluster.clearLayers();
+        cluster.addLayers(to_add);
     });
     
     onMount(async () => {
