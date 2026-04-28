@@ -32,6 +32,8 @@
     <tbody>
         {#if filtered_items.length > 0}
             {#each filtered_items as element}
+                {@const osm = element?.osm}
+                {@const atp = element?.atp}
                 {@const coords = element?.osm?.coordinates || element?.atp?.coordinates}
                 <tr>
                     {#if element.atp}
@@ -43,7 +45,11 @@
                     {:else}
                         <td rowspan={rowspan}>N/A</td>
                     {/if}
-                    <td rowspan={rowspan}>{element.dist ? `${Math.round(element.dist, 0)} м` : 'N/A'}</td>
+                    <td rowspan={rowspan}>
+                        {#if element.dist > 100}
+                            <i class="bg-danger text-white fw-bold bi-exclamation-triangle"></i>
+                        {/if}
+                        {element.dist >= 0 ? `${Math.round(element.dist, 0)} м` : 'N/A'}</td>
                     {#if compare_keys.length > 0}
                         {@const compare_key = compare_keys[0]}
                         {@const osm_value = get_tag_value(element?.osm?.tags, compare_key)}
