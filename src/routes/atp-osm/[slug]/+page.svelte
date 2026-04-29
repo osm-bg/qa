@@ -2,7 +2,7 @@
     import { mount, unmount, onMount } from 'svelte';
     import { page } from '$app/stores';
     import { load_data } from './../app.js';
-    import L, { marker } from 'leaflet';
+    import L from 'leaflet';
     import 'leaflet.markercluster';
     import 'leaflet.markercluster/dist/MarkerCluster.css';
     import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
@@ -172,14 +172,13 @@
         spider_data.items.forEach(p => {
             const coordinates = p.osm ? p.osm.coordinates : p.atp.coordinates;
             const tags_table = generate_tags_table(p.osm, p.atp, compare_keys);
-            const marker = L.marker(coordinates, {
-                icon: L.icon({
-                    iconUrl: determine_icon_url(p, compare_keys),
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                })
+            const icon = L.icon({
+                iconUrl: determine_icon_url(p, compare_keys),
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
             });
+            const marker = L.marker(coordinates, { icon });
             
             // marker.bindPopup(create_popup(p, compare_keys, tags_table, ''));
             bind_lazy_popup(marker, p, compare_keys, tags_table, '');
