@@ -180,7 +180,7 @@
                 return [sum_lat / count, sum_lon / count];
             }
             const avg_coords = find_avg_coords(group.containers);
-            const icon = get_group_icon(group.containers, L);
+            const icon = get_group_icon(group.containers);
             const popup = L.popup().setContent('<span class="fs-5">' + generate_popup_content(group) + '</span><br><br>');
 
             group.marker = L.marker(avg_coords, {
@@ -200,7 +200,7 @@
         }
     });
 
-    function get_group_icon(containers, L) {
+    function get_group_icon(containers) {
         const labels = containers.map(container => {
             const waste_group = container_groups_by_type.find(g => g.name === container.cat);
             const is_complete = waste_group.is_complete_func ? waste_group.is_complete_func(container.tags) : container.tags.count !== undefined;
