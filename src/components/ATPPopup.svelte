@@ -5,18 +5,22 @@
     const atp = point?.atp;
     export let compare_keys = [];
     export let tags_table = {};
+    function copy_text(text) {
+        navigator.clipboard.writeText(text);
+    }
 </script>
 <b>{main_tag}</b><br/>
+<b>{atp.tags?.name}</b>
 {#if atp}
     <strong>ATP:</strong><br/>
     Име: {atp.name}<br/>
-    Координати: {atp.coordinates[0]}, {atp.coordinates[1]}<br/>
+    Координати: <button onclick={copy_text(atp.coordinates.join(', '))}>Копирай координати</button><br/>
 {/if}
 {#if osm}
     <strong>OSM:</strong><br/>
     ID: <a href={"https://www.openstreetmap.org/" + osm.type + "/" + osm.id} target="_blank">{osm.type[0].toUpperCase() + osm.type.slice(1)} {osm.id}</a><br/>
     Име: {osm.name}<br/>
-    Координати: {osm.coordinates[0]}, {osm.coordinates[1]}<br/>
+    Координати: <button onclick={copy_text(osm.coordinates.join(', '))}>Копирай координати</button><br/>
 {/if}
 {#if point.dist}
     {#if point.dist > 100}
@@ -48,7 +52,7 @@
 {/if}
 <button 
     class="btn btn-sm btn-secondary"
-    onclick={navigator.clipboard.writeText('\n\n' + Object.entries(tags_table).map(([k, v]) => `${k}=${v.atp}`).join('\n'))}>Копирай таговете</button>
+    onclick={copy_text('\n\n' + Object.entries(tags_table).map(([k, v]) => `${k}=${v.atp}`).join('\n'))}>Копирай таговете</button>
 {#if osm}
     <a href={`https://www.openstreetmap.org/${osm.type}/${osm.id}`} target="_blank" class="btn btn-sm btn-primary text-white">OSM</a>
     <a href={`https://www.openstreetmap.org/edit?editor=id&${osm.type}=${osm.id}`} target="_blank" class="btn btn-sm btn-primary text-white">iD</a>
