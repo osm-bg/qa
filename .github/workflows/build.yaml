@@ -30,6 +30,9 @@ jobs:
           workflow_search: true
           repo: osm-bg/qa-motorway-milestones
           path: ./src/routes/motorway-milestones
+        
+      - name: Make data directory
+        run: mkdir -p ./src/data
 
       - name: Download qa-road-network artifact
         uses: dawidd6/action-download-artifact@v11
@@ -38,7 +41,7 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow_search: true
           repo: osm-bg/qa-road-network
-          path: ./src/routes/road-network/data
+          path: ./src/data
 
       - name: Download qa-atp-osm artifact
         uses: dawidd6/action-download-artifact@v11

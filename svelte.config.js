@@ -14,6 +14,9 @@ const config = {
 		}),
 		prerender: {
 			handleUnseenRoutes: 'ignore'
+		},
+		alias: {
+			$data: 'src/data',
 		}
 	}
 };
