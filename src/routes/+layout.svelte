@@ -20,9 +20,6 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav">
 				<li class="nav-item">
-					<a class="nav-link" href="{base}/">Начало</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" href="{base}/atp-osm/">ATP &lt;=&gt; OSM</a>
 				</li>
 				<li class="nav-item">
@@ -30,6 +27,12 @@
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{base}/road-network/">Пътна мрежа</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{base}/railway-network/">Железопътна мрежа</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{base}/river-network/">Речна мрежа</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{base}/waste-containers/">Контейнери</a>
