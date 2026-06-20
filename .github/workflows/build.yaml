@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download qa-motorway-milestones artifact
-        uses: dawidd6/action-download-artifact@v11
+        uses: dawidd6/action-download-artifact@v21
         with:
           name: milestones-data
           github_token: ${{secrets.GITHUB_TOKEN}}
@@ -35,7 +35,7 @@ jobs:
         run: mkdir -p ./src/data
 
       - name: Download qa-road-network artifact
-        uses: dawidd6/action-download-artifact@v11
+        uses: dawidd6/action-download-artifact@v21
         with:
           name: road-network-data
           github_token: ${{secrets.GITHUB_TOKEN}}
@@ -44,7 +44,7 @@ jobs:
           path: ./src/data
 
       - name: Download qa-atp-osm artifact
-        uses: dawidd6/action-download-artifact@v11
+        uses: dawidd6/action-download-artifact@v21
         with:
           name: brand-data
           github_token: ${{secrets.GITHUB_TOKEN}}
@@ -53,7 +53,7 @@ jobs:
           path: ./static/atp-osm/data
 
       - name: Download qa-waste-containers artifact
-        uses: dawidd6/action-download-artifact@v11
+        uses: dawidd6/action-download-artifact@v21
         with:
           name: waste-containers-data
           github_token: ${{secrets.GITHUB_TOKEN}}
