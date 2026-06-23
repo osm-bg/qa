@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-github": "vite build --base /qa/",
+    "build-github": "vite build",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",

@@ -15,6 +15,9 @@ export default {
 		},
 		alias: {
 			$data: 'src/data',
+		},
+		paths: {
+			base: process.env.NODE_ENV === 'production' ? '/qa' : '',
 		}
 	}
 };
